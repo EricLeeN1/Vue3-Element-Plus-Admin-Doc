@@ -7,6 +7,8 @@ module.exports = {
       lang: "zh-CN",
     },
   },
+  // 路径名为 "/<REPO>/"
+  base: "/vue3-element-plus-admin/",
   themeConfig: {
     subSidebar: "auto",
     nav: [
