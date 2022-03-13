@@ -14,7 +14,7 @@ module.exports = {
     nav: [
       { text: "首页", link: "/" },
       {
-        text: "李祎泽的 JavaScript 博客",
+        text: "ErciLee的 JavaScript 博客",
         items: [
           { text: "Github", link: "https://github.com/EricLeeN1" },
           {
