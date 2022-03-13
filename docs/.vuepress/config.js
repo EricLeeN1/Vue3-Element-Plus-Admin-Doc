@@ -33,7 +33,7 @@ module.exports = {
       },
       {
         title: "基础学习",
-        path: "/base/ConditionalTypes",
+        path: "/base/Vue3",
         collapsable: false, // 不折叠
         children: [
           { title: "Vue3 Infos", path: "/base/Vue3" },
