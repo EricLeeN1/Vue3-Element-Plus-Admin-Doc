@@ -8,7 +8,7 @@ module.exports = {
     },
   },
   // 路径名为 "/<REPO>/"
-  base: "/vue3-element-plus-admin/",
+  base: "/Vue3-Element-Plus-Admin-Doc/",
   themeConfig: {
     subSidebar: "auto",
     nav: [
