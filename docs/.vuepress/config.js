@@ -36,6 +36,7 @@ module.exports = {
         path: "/base/Vue3",
         collapsable: false, // 不折叠
         children: [
+          { title: "TypeScript Infos", path: "/base/TypeScript" },
           { title: "Vue3 Infos", path: "/base/Vue3" },
           { title: "Element-Plus Infos", path: "/base/Element-Plus" },
         ],
