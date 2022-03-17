@@ -1,7 +1,7 @@
 ---
 title: TypeScript
 author: ErciLee
-date: "2021-12-12"
+date: "2022-3-16"
 ---
 
 ## 一、TypeScript 开发环境搭建
