@@ -100,10 +100,13 @@ let c:Color = Color.Green;
 
 ```typescript
 let power: any;  -> any类型，所有类型都能被赋值給它，它也能被赋值给其他任何类型。
-let u:undefined = undefined; -> 当你指定了--strictNullChecks标记，null和undefined只能赋值给void和它们各自。
-let nu:null = null; -> 默认情况下null和undefined是所有类型的子类型。 就是说你可以把 null和undefined赋值给number类型的变量。
+let u:undefined = undefined; -> 当你指定了--strictNullChecks标记，null和undefined只能赋值给void和它们各自。undefined 表示未初始化的值
+let nu:null = null; -> 默认情况下null和undefined是所有类型的子类型。 就是说你可以把 null和undefined赋值给number类型的变量。 null 表示不存在
 function log(message: string): void { -> 使用：void来表示一个函数没有一个返回值
   console.log(message);
+}
+function liveDangerously(x?:number|null): void { -> 使用：void来表示一个函数没有一个返回值
+  console.log(x!.toFixed(2)); // !仅当x不为null时候使用
 }
 // 返回never的函数必须存在无法达到的终点
 function error(message: string): never {
@@ -158,3 +161,11 @@ function formatCommandline(command: string[] | string) {
   // Do stuff with line: string
 }
 ```
+
+### 6. 类型断言
+
+```typescript
+const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;
+const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
+```
+
