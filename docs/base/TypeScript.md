@@ -169,3 +169,82 @@ const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;
 const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
 ```
 
+## 四、类型缩小
+
+### 1. Typeof 类型守卫
+
+```typescript
+function padLeft(padding: number | string, input: string): string {
+  // return new Array(padding + 1).join(" ") + input; // 运算符“+”不能应用于类型“string | number”和“number”
+  if (typeof padding === "number") {
+    return new Array(padding + 1).join(" ") + input;
+  }
+  return padding + input;
+}
+typeof strs = "object"
+typeof strs = "number"
+typeof strs = "string"
+typeof strs = "bigint"
+typeof strs = "boolean"
+typeof strs = "symbol"
+typeof strs = "undefined"
+typeof strs = "function"
+```
+
+### 2. 真值缩小
+
+条件、&&、||、if语句、布尔否定(!)
+
+```typescript
+false: 0、NaN、""(空字符串)、On(bigint的零的版本)、null、undefined等
+Boolean("hello") // type:boolean,value:true
+!!"world"；// type:boolean,value:true 第一个!把对象转为文字布尔类型，通过第二个!转换为真正的布尔类型
+```
+
+```typescript
+function multiplyAll(values: number[] | undefined, factor: number) {
+  if (!values) {
+    return values;
+  } else {
+    return values.map((x) => {
+      return x * factor;
+    });
+  }
+}
+```
+
+### 3. 等值缩小
+
+```typescript
+===,!==,==,!=
+```
+
+```typescript
+function example(x: string | number, y: string | boolean) {
+  if (x === y) {
+    // 全等时类型必然相等，都是string
+    x.toLocaleLowerCase();
+    y.toLocaleLowerCase();
+  } else {
+    console.log(x);
+    console.log(y);
+  }
+}
+```
+
+```typescript
+interface Container {
+  value: number | null | undefined;
+}
+
+function multiplyValue(container: Container, factor: number) {
+  if (container.value != null) {
+    console.log(container.value);
+    container.value *= factor;
+  }
+}
+
+multiplyValue({ value: 5 }, 6);
+multiplyValue({ value: undefined }, 6); // null 或者undefined都不会触发打印
+```
+
