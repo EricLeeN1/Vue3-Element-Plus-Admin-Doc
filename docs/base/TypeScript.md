@@ -546,3 +546,64 @@ console.log(arr.slice(0)); // 此时会报错，arr 没有slice方法
 ```
 
 #### 4. 指定类型参数
+
+```typescript
+function combine<T>(arr1: T[], arr2: T[]): T[] {
+  return arr1.concat(arr2);
+}
+
+const arr = combine([1, 2, 3], [2, 3, 4]);
+const arr1 = combine<number | string>([1, 2, 3], ["1"]); // 指定类型参数 不指定将会报错：不能将类型“string”分配给类型“number”。
+
+```
+
+#### 5. 编写优秀通用函数的准则
+
+- 可能的情况下，使用类型参数本身，而不是对其进行约束
+- 总是尽可能少地使用类型参数
+- 如果一个类型的参数只出现在一个地方，请重新考虑你是否真的需要它 
+
+```typescript
+function firstElement1<T>(arr: T[]) {
+  // good
+  return arr[0];
+}
+
+function firstElement2<T extends any[]>(arr: T) {
+  return arr[0];
+}
+
+const a = firstElement1([1, 2, 3]);
+const b = firstElement2([1, 2, 3]);
+
+// 1. 在可能的情况下尽可能使用类型参数本身，而不是对其进行约束
+
+function filter1<T>(arr: T[], func: (arg: T) => boolean) {
+  // good
+  return arr.filter(func);
+}
+
+function filter2<T, Func extends (arg: T) => boolean>(arr: T[], func: Func) {
+  return arr.filter(func);
+}
+
+// 2. 总是尽可能少地使用类型参数
+
+function greet1<Str extends string>(s: Str) {
+  console.log("hello " + s);
+}
+
+greet1("world");
+
+function greet2(s: string) {
+  console.log("hello " + s);
+}
+
+// 3. 如果一个类型的参数只出现在一个地方，请重新考虑你是否真的需要它
+
+```
+
+### 5. 函数的可选参数
+
+
+
