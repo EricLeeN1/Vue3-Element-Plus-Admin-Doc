@@ -409,3 +409,140 @@ function getArea(shape: Shape) {
 
 never 不应该存在的状态
 
+```typescript
+interface Circle {
+  kind: "circle";
+  radius: number;
+}
+interface Square {
+  kind: "square";
+  sidelength: number;
+}
+interface Triangle {
+  kind: "triangle";
+  sidelength: number;
+}
+
+type Shape = Circle | Square | Triangle;
+
+function getArea(shape: Shape) {
+  switch (shape.kind) {
+    case "circle":
+      return Math.PI * shape.radius ** 2;
+    case "square":
+      return shape.sidelength * shape.sidelength;
+    default:
+      // 做一些穷尽性检查
+      const _exhaustiveCheck: never = shape; // 不能将类型“Triangle”分配给类型“never”。
+      return _exhaustiveCheck;
+  }
+}
+```
+
+
+
+## 五、function 函数
+
+### 1. 类型表达式
+
+```typescript
+type GreetFunciton = (a: string) => void;
+
+function greeter(fn: GreetFunciton) {
+  fn("Hello,World");
+}
+
+function printToConsole(s: string) {
+  console.log(s);
+}
+
+greeter(printToConsole);
+```
+
+### 2. 调用签名
+
+```typescript
+type DescribableFunction = {
+  description: string;
+  (someArg: number): boolean;
+};
+
+function doSomething(fn: DescribableFunction) {
+  console.log(fn.description + "returned" + fn(6));
+}
+
+function fn1(n: number) {
+  console.log(n);
+  return true;
+}
+fn1.description = "hello";
+
+doSomething(fn1);
+```
+
+### 3. 构造签名
+
+```typescript
+interface CallOrConstructor {
+  new (s: string): Date; // 构造签名的方式
+  (n: number): number; // 调用签名的方式
+}
+
+function fn(date: CallOrConstructor) {
+  let d = new Date("2022-03-20");
+  let n = date(100);
+}
+```
+
+### 4. 泛型函数
+
+#### 1. 类型推断
+
+入参和return存在对应关系，可以使用泛型类型
+
+```typescript
+function firstElement<Type>(arr: Type[]): Type | undefined {
+  return arr[0];
+}
+
+firstElement<string>(["a", "b", "c"]);
+firstElement([1, 2, 3]);
+firstElement<undefined>([]); // 不能将类型“number”分配给类型“undefined”
+```
+
+#### 2. 限制条件
+
+```typescript
+function longest<T extends { length: number }>(a: T, b: T) {
+  // 限制了传入的a,b的类型一定要有length属性
+  if (a.length >= b.length) {
+    // 不加限制条件的话类型“T”上不存在属性“length”。
+    return a;
+  }
+  return b;
+}
+
+const longerArray = longest([1, 2], [2, 3, 4]);
+const longerString = longest("eric", "lee");
+const longerNumber = longest(10, 100); // 类型“number”的参数不能赋给类型“{ length: number; }”的参数。
+```
+
+#### 3. 使用受限制
+
+```typescript
+function minimumLength<T extends { length: number }>(
+  obj: T,
+  minimum: number
+): T {
+  if (obj.length >= minimum) {
+    return obj;
+  } else {
+    return { length: minimum }; // 不能将类型“{ length: number; }”分配给类型“T”。 "{ length: number; }" 可赋给 "T" 类型的约束，但可以使用约束 "{ length: number; }" 的其他子类型实例化 "T"。
+  }
+}
+
+const arr = minimumLength([1, 2, 3], 6);
+console.log(arr.slice(0)); // 此时会报错，arr 没有slice方法
+```
+
+#### 4. 指定类型参数
