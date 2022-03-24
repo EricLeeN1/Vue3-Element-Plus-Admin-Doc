@@ -171,7 +171,9 @@ const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
 
 ## 四、类型缩小
 
-### 1. Typeof 类型守卫
+### 1. Typeof 类型缩小
+
+常用于处理联合类型变量的场景
 
 ```typescript
 function padLeft(padding: number | string, input: string): string {
@@ -193,7 +195,7 @@ typeof strs = "function"
 
 ### 2. 真值缩小
 
-条件、&&、||、if语句、布尔否定(!)
+条件、&&、||、if语句、布尔否定(!)  
 
 ```typescript
 false: 0、NaN、""(空字符串)、On(bigint的零的版本)、null、undefined等
@@ -215,9 +217,7 @@ function multiplyAll(values: number[] | undefined, factor: number) {
 
 ### 3. 等值缩小
 
-```typescript
 ===,!==,==,!=
-```
 
 ```typescript
 function example(x: string | number, y: string | boolean) {
@@ -248,3 +248,136 @@ multiplyValue({ value: 5 }, 6);
 multiplyValue({ value: undefined }, 6); // null 或者undefined都不会触发打印
 ```
 
+### 4. in 缩小
+
+"value" in x  ->  用于确认对象是否具有某个名称的属性
+
+```typescript
+type Fish = {
+  swim: () => void;
+};
+type Bird = {
+  fly: () => void;
+};
+type Human = {
+  swim?: () => void;
+  fly?: () => void;
+};
+
+
+function move(animal: Fish | Bird | Human) {
+  if ("swim" in animal) {
+    //  Fish | Human
+    return (animal as Fish).swim();
+  }
+  //  Bird | Human
+  return (animal as Bird).fly();
+}
+```
+
+### 5. Instanceof 操作符缩小
+
+x instanceof Foo ->  来检查一个值Foo是否是另一个值x的实例
+
+```typescript
+function logValue(x: Date | string) {
+  if (x instanceof Date) {
+    console.log(x.toUTCString());
+  } else {
+    console.log(x.toLocaleLowerCase);
+  }
+}
+console.log(new Date());
+console.log("Hello Ts");
+```
+
+### 6. 分配缩小
+
+```typescript
+// let x: string | number
+let x = Math.random() < 0.5 ? 10 : "hello world";
+
+x = 1;
+console.log(x);
+
+x = "good bye";
+console.log(x);
+```
+
+### 7. 控制流分析
+
+```typescript
+function example() {
+  let x: string | number | boolean;
+  x = Math.random() < 0.5;
+  console.log(x); // boolean
+
+  if (Math.random() < 0.5) {
+    x = "hello";
+    console.log(x); // string
+  } else {
+    x = 100;
+    console.log(x); // number
+  }
+  return x;
+}
+
+let x = example();
+x = "hello";
+x = 100;
+// x = true; // Type 'boolean' is not assignable to type 'string | number'.
+
+```
+
+### 8. 使用类型谓词
+
+parameterName is type -> 参数是一个类型
+
+```typescript
+type Fish = {
+  name: string;
+  swim: () => void;
+};
+type Bird = {
+  name: string;
+  fly: () => void;
+};
+
+function isFish(pet: Fish | Bird): pet is Fish {
+  return (pet as Fish).swim !== undefined; // 如果pet有swim这个属性的话就是Fish,否则就是Bird
+}
+
+function getSmallPet(): Fish | Bird {
+  let fish: Fish = {
+    name: "sharkey",
+    swim: () => {},
+  };
+  let bird: Bird = {
+    name: "sparrow",
+    fly: () => {},
+  };
+  return true ? bird : fish;
+}
+
+let pet = getSmallPet();
+
+if (isFish(pet)) {
+  pet.swim();
+} else {
+  pet.fly();
+}
+
+const zoo: (Fish | Bird)[] = [getSmallPet(), getSmallPet(), getSmallPet()];
+const underWater: Fish[] = zoo.filter(isFish);
+const underWater2: Fish[] = zoo.filter(isFish) as Fish[];
+
+const underWater3: Fish[] = zoo.filter((pet): pet is Fish => {
+  if (pet.name === "frog") {
+    return false;
+  }
+  return isFish(pet);
+});
+
+```
+
+### 9. unions
