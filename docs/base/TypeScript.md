@@ -605,5 +605,17 @@ function greet2(s: string) {
 
 ### 5. 函数的可选参数
 
+```typescript
+function f(n: number = 100) {
+  console.log(n.toFixed());
+  console.log(n.toFixed(3));
+}
 
+f(123.45);
+f();
 
+```
+
+### 6. 回调中的可选参数
+
+当为回调写一个函数类型时，**永远不要写一个可选参数**，除非你打算在不传递该参数的情况下调用函数、
